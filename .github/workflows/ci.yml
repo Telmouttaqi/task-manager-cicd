@@ -30,7 +30,8 @@ jobs:
 
       - name: Run automated tests
         run: npm test
-            - name: Build Docker image
+
+      - name: Build Docker image
         run: docker build -t task-manager:ci .
 
       - name: Start container
