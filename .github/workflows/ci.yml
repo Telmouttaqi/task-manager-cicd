@@ -37,12 +37,12 @@ jobs:
       - name: Start container
         run: docker run -d --init --name task-manager-ci -p 127.0.0.1:3001:3000 task-manager:ci
 
-      - name: Check container health
+            - name: Check container health
         run: |
           curl --fail --silent --show-error \
             --retry 10 \
-            --retry-connrefused \
-            --retry-delay 1 \
+            --retry-all-errors \
+            --retry-delay 2 \
             --max-time 5 \
             http://127.0.0.1:3001/health
 
