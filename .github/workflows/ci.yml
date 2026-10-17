@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  packages: writ
 
 jobs:
   test:
@@ -59,3 +60,18 @@ jobs:
           if docker container inspect task-manager-ci > /dev/null 2>&1; then
             docker rm -f task-manager-ci
           fi
+            - name: Publish tested image
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_USER: ${{ github.actor }}
+          IMAGE: ghcr.io/telmouttaqi/task-manager-cicd
+        run: |
+          echo "$GH_TOKEN" | docker login ghcr.io \
+            --username "$GH_USER" \
+            --password-stdin
+
+          docker tag task-manager:ci "$IMAGE:$GITHUB_SHA"
+          docker push "$IMAGE:$GITHUB_SHA"
+
+          echo "Published image: $IMAGE:$GITHUB_SHA"    
