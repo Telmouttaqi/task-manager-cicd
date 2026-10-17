@@ -21,6 +21,12 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (req.method === "GET" && req.url === "/version") {
+    res.writeHead(200);
+    res.end(JSON.stringify({ version: "2.0.0" }));
+    return;
+  }
+
   res.writeHead(404);
   res.end(JSON.stringify({ error: "Route not found" }));
 });
