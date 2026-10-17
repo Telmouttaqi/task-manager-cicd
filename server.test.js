@@ -30,6 +30,7 @@ test("GET /health returns status ok", async () => {
   const body = await response.json();
 
   assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type"), /application\/json/);
   assert.deepEqual(body, { status: "ok" });
 });
 
@@ -38,9 +39,19 @@ test("GET /tasks returns the sample task", async () => {
   const body = await response.json();
 
   assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type"), /application\/json/);
   assert.deepEqual(body, [
     { id: 1, title: "Learn CI/CD", completed: false }
   ]);
+});
+
+test("GET /version returns the server version", async () => {
+  const response = await fetch(`${baseUrl}/version`);
+  const body = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type"), /application\/json/);
+  assert.deepEqual(body, { version: "3.0.0" });
 });
 
 test("GET /unknown returns 404", async () => {
@@ -48,5 +59,15 @@ test("GET /unknown returns 404", async () => {
   const body = await response.json();
 
   assert.equal(response.status, 404);
+  assert.match(response.headers.get("content-type"), /application\/json/);
+  assert.deepEqual(body, { error: "Route not found" });
+});
+
+test("non-GET requests to known routes return 404", async () => {
+  const response = await fetch(`${baseUrl}/health`, { method: "POST" });
+  const body = await response.json();
+
+  assert.equal(response.status, 404);
+  assert.match(response.headers.get("content-type"), /application\/json/);
   assert.deepEqual(body, { error: "Route not found" });
 });

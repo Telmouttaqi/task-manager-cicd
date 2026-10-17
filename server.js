@@ -23,7 +23,7 @@ const server = http.createServer((req, res) => {
 
   if (req.method === "GET" && req.url === "/version") {
     res.writeHead(200);
-    res.end(JSON.stringify({ version: "2.0.0" }));
+    res.end(JSON.stringify({ version: "3.0.0" }));
     return;
   }
 
